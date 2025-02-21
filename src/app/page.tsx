@@ -1,6 +1,7 @@
+// src/app/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const ChatApp = () => {
   const [input, setInput] = useState<string>("");
@@ -9,7 +10,6 @@ const ChatApp = () => {
   >([]);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
-  const [controller, setController] = useState<AbortController | null>(null);
 
   const toggleTheme = () => setIsDarkMode((prev) => !prev);
 
@@ -22,76 +22,33 @@ const ChatApp = () => {
     setChatHistory((prev) => [...prev, { role: "user", content: input }]);
     setIsGenerating(true);
 
-    const abortCtrl = new AbortController();
-    setController(abortCtrl);
-
     try {
-      const res = await fetch("/api/endpoint", {
+      const res = await fetch("https://api.gemini.ai/endpoint", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: input, model: "qwen:7b" }),
-        signal: abortCtrl.signal,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`,
+        },
+        body: JSON.stringify({ prompt: input }),
       });
 
       if (!res.ok) throw new Error("Failed to fetch response");
 
-      const reader = res.body?.getReader();
-      let done = false;
-      let fullResponse = "";
+      const data = await res.json();
 
-      while (!done) {
-        const result = await reader?.read();
-        if (!result) break;
-        const { value, done: streamDone } = result;
-
-        if (value && !abortCtrl.signal.aborted) {
-          const chunk = new TextDecoder().decode(value);
-
-          try {
-            const data = JSON.parse(chunk);
-            if (!data.done) {
-              fullResponse += data.response; // Accumulate chunks
-            } else {
-              done = true;
-            }
-          } catch {
-            fullResponse += chunk; // Handle partial JSON
-          }
-        } else {
-          done = true;
-        }
-      }
-
-      // Append the complete response to chat history after streaming ends
-      if (!abortCtrl.signal.aborted) {
-        setChatHistory((prev) => [
-          ...prev,
-          { role: "assistant", content: fullResponse.trim() }, // Trim to remove extra spaces
-        ]);
-      }
+      setChatHistory((prev) => [
+        ...prev,
+        { role: "assistant", content: data.response.trim() },
+      ]);
     } catch (error) {
-      if (error instanceof Error && error.name !== "AbortError") {
-        console.error("Error fetching response:", error);
-        setChatHistory((prev) => [
-          ...prev,
-          { role: "assistant", content: "An error occurred." },
-        ]);
-      }
+      console.error("Error fetching response:", error);
+      setChatHistory((prev) => [
+        ...prev,
+        { role: "assistant", content: "An error occurred." },
+      ]);
     } finally {
       setIsGenerating(false);
       setInput("");
-      setController(null);
-    }
-  };
-
-  const handleStop = () => {
-    if (controller) {
-      controller.abort();
-      setChatHistory((prev) => [
-        ...prev,
-        { role: "assistant", content: "[Generation stopped]" },
-      ]);
-      setIsGenerating(false);
     }
   };
 
@@ -103,7 +60,7 @@ const ChatApp = () => {
     >
       {/* Header */}
       <header className="w-full max-w-4xl px-4 py-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Qwen Chat</h1>
+        <h1 className="text-2xl font-bold">Gemini Chat</h1>
         <button
           onClick={toggleTheme}
           className="text-sm font-medium hover:underline"
@@ -141,7 +98,7 @@ const ChatApp = () => {
             className="flex-grow p-2 rounded-lg bg-gray-700 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
             disabled={isGenerating}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
+              if (e.key === "Enter") {
                 e.preventDefault();
                 handleSubmit(e);
               }
@@ -154,14 +111,6 @@ const ChatApp = () => {
           >
             Send
           </button>
-          {isGenerating && (
-            <button
-              onClick={handleStop}
-              className="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-300"
-            >
-              Stop
-            </button>
-          )}
         </form>
       </main>
 
@@ -170,21 +119,12 @@ const ChatApp = () => {
         <p>
           Powered by{" "}
           <a
-            href="https://ollama.ai/"
+            href="https://gemini.ai"
             target="_blank"
             rel="noopener noreferrer"
             className="underline hover:text-blue-500 transition-colors duration-300"
           >
-            Ollama
-          </a>{" "}
-          and{" "}
-          <a
-            href="https://github.com/Qwen"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-blue-500 transition-colors duration-300"
-          >
-            Qwen
+            Gemini AI
           </a>
         </p>
       </footer>
