@@ -1,30 +1,45 @@
 // /src/app/api/endpoint/route.ts
-import { NextRequest, NextResponse } from "next/server";
-import axios from "axios";
 
-export async function POST(req: NextRequest) {
-  try {
-    // Assuming you pass the prompt in the request body
-    const { prompt } = await req.json();
-    
-    // Fetch the API Key from the environment variables
-    const apiKey = process.env.GEMINI_API_KEY;
+import { NextResponse } from 'next/server';
 
-    if (!apiKey) {
-      return NextResponse.json({ error: "API key missing" }, { status: 500 });
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+
+export async function POST(request: Request) {
+    try {
+        const { prompt } = await request.json();
+
+        if (!prompt) {
+            return NextResponse.json({ error: 'Prompt is required' }, { status: 400 });
+        }
+
+       // const apiKey = process.env.GEMINI_API_KEY;
+       const geminiApiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+
+
+        if (!geminiApiKey) {
+            return NextResponse.json({ error: 'GEMINI_API_KEY is not set' }, { status: 500 });
+        }
+
+        const response = await fetch(`${GEMINI_API_URL}?key=${geminiApiKey}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }]
+            }),
+        });
+
+        if (!response.ok) {
+            console.error(`Gemini API responded with status ${response.status}: ${await response.text()}`);
+            return NextResponse.json({ error: `Gemini API error: ${response.statusText}` }, { status: response.status });
+        }
+
+        const data = await response.json();
+        return NextResponse.json(data);
+
+    } catch (error) {
+        console.error('Error in Gemini API route:', error);
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
-
-    // Make the API request to Google Gemini
-    const geminiResponse = await axios.post(
-      `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${apiKey}`,
-      {
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
-      }
-    );
-
-    return NextResponse.json(geminiResponse.data);
-  } catch (error) {
-    console.error("Error calling Gemini API:", error);
-    return NextResponse.json({ error: "Failed to fetch response" }, { status: 500 });
-  }
 }
