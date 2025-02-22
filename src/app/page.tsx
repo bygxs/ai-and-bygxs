@@ -107,13 +107,9 @@ const ChatApp = () => {
         !isDarkMode && "bg-white text-black"
       }`}
     >
-      {/* Header */}
-      <header className="w-full max-w-4xl px-4 py-6 relative bg-white dark:bg-gray-900 transition-colors duration-300">
-        <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
-          BYGXS AI Chat
-        </h1>
-      </header>
-      <div>
+     
+        {/* dark and light mode button */}
+ {/*      <div>
         <button
           onClick={toggleTheme}
           className="absolute top-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200"
@@ -154,6 +150,14 @@ const ChatApp = () => {
           )}
         </button>
       </div>
+ */}
+      
+      <header className="w-full max-w-4xl px-4 py-6 relative bg-white dark:bg-gray-900 transition-colors duration-300">
+        <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
+          BYGXS AI Chat
+        </h1>
+      </header>
+    
 
       {/* Chat Interface */}
       <main className="w-full max-w-4xl px-4 py-6 flex-grow flex flex-col space-y-4">
@@ -179,8 +183,6 @@ const ChatApp = () => {
         </div>
 
         {/* Input Form */}
-
-        {/* Input Form */}
         <form
           onSubmit={handleSubmit}
           className="relative flex items-center space-x-2"
@@ -192,7 +194,8 @@ const ChatApp = () => {
             className="flex-grow p-2 rounded-lg bg-gray-700 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
             disabled={isGenerating || isLoading}
             onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
+              //  if (e.key === "Enter" && !e.shiftKey) {
+              if (e.key === "Enter") {
                 e.preventDefault();
                 handleSubmit(e);
               }
@@ -206,8 +209,19 @@ const ChatApp = () => {
             {isLoading ? "Sending..." : "Send"}
           </button>
 
-          {/* Break Button */}
+          {/* Break Button below the Send Button */}
           {isGenerating && (
+            <button
+              onClick={handleAbort}
+              className="px-3 py-2 rounded-lg bg-red-500 text-white "
+              disabled={!abortController}
+            >
+              Stop
+            </button>
+          )}
+          {/* Break Button on top of text area  */}
+
+          {/*   {isGenerating && (
             <button
               onClick={handleAbort}
               className="absolute right-0 px-3 py-1 rounded-lg bg-gray-500 text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors duration-300"
@@ -221,7 +235,7 @@ const ChatApp = () => {
             >
               Break
             </button>
-          )}
+          )} */}
         </form>
 
         {/* <form onSubmit={handleSubmit} className="flex items-center space-x-2">
@@ -247,7 +261,8 @@ const ChatApp = () => {
           </button>
         </form> */}
 
-        {/* Break Button */}
+        {/* Break Button red ugly button */}
+        {/*  
         {isGenerating && (
           <button
             onClick={handleAbort}
@@ -256,7 +271,7 @@ const ChatApp = () => {
           >
             Break
           </button>
-        )}
+        )} */}
       </main>
 
       {/* Footer */}
