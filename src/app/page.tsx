@@ -154,7 +154,7 @@ const ChatApp = () => {
       
       <header className="w-full max-w-4xl px-4 py-6 relative bg-white dark:bg-gray-900 transition-colors duration-300">
         <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
-          BYGXS AI Chat
+           AI Chatting bygxs
         </h1>
       </header>
     
