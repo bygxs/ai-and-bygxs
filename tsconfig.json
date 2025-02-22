@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/endpoint/route1.ts.bak", "src/app/page2.tsx.bak"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/endpoint/route1.ts.bak", "src/app/page2.tsx.bak", "src/app/page4.tsx.bak"],
   "exclude": ["node_modules"]
 }

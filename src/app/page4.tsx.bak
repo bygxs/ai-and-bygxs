@@ -106,7 +106,6 @@ const ChatApp = () => {
         !isDarkMode && "bg-white text-black"
       }`}
     >
-      {/* Header */}
       <header className="w-full max-w-4xl px-4 py-6 relative bg-white dark:bg-gray-900 transition-colors duration-300">
         <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
           AI Chat BYGXS
@@ -152,9 +151,7 @@ const ChatApp = () => {
         </button>
       </header>
 
-      {/* Chat Interface */}
       <main className="w-full max-w-4xl px-4 py-6 flex-grow flex flex-col space-y-4">
-        {/* Render Chat History */}
         <div className="flex flex-col space-y-2">
           {chatHistory.map((msg, index) => (
             <div
@@ -175,7 +172,6 @@ const ChatApp = () => {
           ))}
         </div>
 
-        {/* Input Form */}
         <form onSubmit={handleSubmit} className="flex items-center space-x-2">
           <textarea
             value={input}
@@ -200,18 +196,15 @@ const ChatApp = () => {
         </form>
 
         {/* Break Button */}
-        {isGenerating && (
-          <button
-            onClick={handleAbort}
-            className="mt-4 px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-300"
-            disabled={!abortController}
-          >
-            Break
-          </button>
-        )}
+        <button
+          onClick={handleAbort}
+          className="mt-4 px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-300"
+          disabled={!isGenerating || !abortController}
+        >
+          Break
+        </button>
       </main>
 
-      {/* Footer */}
       <footer className="w-full max-w-4xl px-4 py-4 text-sm text-center">
         <p>
           Powered by{" "}
