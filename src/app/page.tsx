@@ -24,7 +24,8 @@ const ChatApp = () => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(true);
   const [isGenerating, setIsGenerating] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [abortController, setAbortController] = useState<AbortController | null>(null);
+  const [abortController, setAbortController] =
+    useState<AbortController | null>(null);
 
   const toggleTheme = () => setIsDarkMode((prev) => !prev);
 
@@ -73,20 +74,24 @@ const ChatApp = () => {
           timestamp: new Date(),
         },
       ]);
-    } catch (error) {
-      if (error.name === "AbortError") {
-        console.log("Request aborted.");
-      } else {
-        console.error("Error fetching response:", error);
-        setChatHistory((prev) => [
-          ...prev,
-          {
-            role: "assistant",
-            content: "An error occurred.",
-            timestamp: new Date(),
-          },
-        ]);
-      }
+    } 
+    
+    catch (error: unknown) {
+        if ((error as Error).name === "AbortError") {
+          console.log("Request aborted.");
+        } else {
+          console.error("Error fetching response:", error);
+          setChatHistory((prev) => [
+            ...prev,
+            {
+              role: "assistant",
+              content: "An error occurred.",
+              timestamp: new Date(),
+            },
+          ]);
+        }
+      
+      
     } finally {
       setIsGenerating(false);
       setIsLoading(false);
@@ -109,7 +114,7 @@ const ChatApp = () => {
       {/* Header */}
       <header className="w-full max-w-4xl px-4 py-6 relative bg-white dark:bg-gray-900 transition-colors duration-300">
         <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
-          AI Chat BYGXS
+          BYGXS AI Chat
         </h1>
         <button
           onClick={toggleTheme}
@@ -176,7 +181,12 @@ const ChatApp = () => {
         </div>
 
         {/* Input Form */}
-        <form onSubmit={handleSubmit} className="flex items-center space-x-2">
+
+        {/* Input Form */}
+        <form
+          onSubmit={handleSubmit}
+          className="relative flex items-center space-x-2"
+        >
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -197,7 +207,47 @@ const ChatApp = () => {
           >
             {isLoading ? "Sending..." : "Send"}
           </button>
+
+          {/* Break Button */}
+          {isGenerating && (
+            <button
+              onClick={handleAbort}
+              className="absolute right-0 px-3 py-1 rounded-lg bg-gray-500 text-white hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors duration-300"
+              style={{
+                top: "0",
+                left: "0",
+                zIndex: 10,
+                opacity: 0.8,
+              }}
+              disabled={!abortController}
+            >
+              Break
+            </button>
+          )}
         </form>
+
+        {/* <form onSubmit={handleSubmit} className="flex items-center space-x-2">
+          <textarea
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type your prompt here..."
+            className="flex-grow p-2 rounded-lg bg-gray-700 text-white resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+            disabled={isGenerating || isLoading}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit(e);
+              }
+            }}
+          />
+          <button
+            type="submit"
+            className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+            disabled={isGenerating || isLoading}
+          >
+            {isLoading ? "Sending..." : "Send"}
+          </button>
+        </form> */}
 
         {/* Break Button */}
         {isGenerating && (
