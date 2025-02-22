@@ -74,24 +74,20 @@ const ChatApp = () => {
           timestamp: new Date(),
         },
       ]);
-    } 
-    
-    catch (error: unknown) {
-        if ((error as Error).name === "AbortError") {
-          console.log("Request aborted.");
-        } else {
-          console.error("Error fetching response:", error);
-          setChatHistory((prev) => [
-            ...prev,
-            {
-              role: "assistant",
-              content: "An error occurred.",
-              timestamp: new Date(),
-            },
-          ]);
-        }
-      
-      
+    } catch (error: unknown) {
+      if ((error as Error).name === "AbortError") {
+        console.log("Request aborted.");
+      } else {
+        console.error("Error fetching response:", error);
+        setChatHistory((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: "An error occurred.",
+            timestamp: new Date(),
+          },
+        ]);
+      }
     } finally {
       setIsGenerating(false);
       setIsLoading(false);
@@ -116,6 +112,8 @@ const ChatApp = () => {
         <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
           BYGXS AI Chat
         </h1>
+      </header>
+      <div>
         <button
           onClick={toggleTheme}
           className="absolute top-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200"
@@ -155,7 +153,7 @@ const ChatApp = () => {
             </svg>
           )}
         </button>
-      </header>
+      </div>
 
       {/* Chat Interface */}
       <main className="w-full max-w-4xl px-4 py-6 flex-grow flex flex-col space-y-4">
