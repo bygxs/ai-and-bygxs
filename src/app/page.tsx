@@ -44,7 +44,6 @@ const ChatApp = () => {
 
     const controller = new AbortController();
     setAbortController(controller);
-    
 
     try {
       const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
@@ -201,13 +200,48 @@ const ChatApp = () => {
               }
             }}
           />
+
           <button
             type="submit"
             className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
             disabled={isGenerating || isLoading}
           >
-            {isLoading ? "Sending..." : "Send"}
+            {isLoading ? (
+              <>
+                <svg
+                  className="animate-spin h-5 w-5 text-white inline-block mr-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  />
+                </svg>
+                Loading...
+              </>
+            ) : (
+              "Send"
+            )}
           </button>
+
+        {/*   <button
+            type="submit"
+            className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-300"
+            disabled={isGenerating || isLoading}
+          >
+            {isLoading ? "Sending..." : "Send"}
+          </button> */}
 
           {/* Break Button below the Send Button */}
           {isGenerating && (
