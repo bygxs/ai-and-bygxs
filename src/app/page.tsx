@@ -48,7 +48,8 @@ const ChatApp = () => {
     try {
       const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
       const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+
         {
           method: "POST",
           headers: {
@@ -107,9 +108,8 @@ const ChatApp = () => {
         !isDarkMode && "bg-white text-black"
       }`}
     >
-     
-        {/* dark and light mode button */}
- {/*      <div>
+      {/* dark and light mode button */}
+      {/*      <div>
         <button
           onClick={toggleTheme}
           className="absolute top-4 right-4 p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200"
@@ -151,13 +151,12 @@ const ChatApp = () => {
         </button>
       </div>
  */}
-      
+
       <header className="w-full max-w-4xl px-4 py-6 relative bg-white dark:bg-gray-900 transition-colors duration-300">
         <h1 className="text-2xl font-bold text-center text-gray-900 dark:text-white">
-           AI Chatting bygxs
+          AI Chatting bygxs
         </h1>
       </header>
-    
 
       {/* Chat Interface */}
       <main className="w-full max-w-4xl px-4 py-6 flex-grow flex flex-col space-y-4">
