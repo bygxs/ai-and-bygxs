@@ -44,11 +44,12 @@ const ChatApp = () => {
 
     const controller = new AbortController();
     setAbortController(controller);
+    
 
     try {
       const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
       const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-thinking-exp-01-21:generateContent?key=${apiKey}`,
 
         {
           method: "POST",
